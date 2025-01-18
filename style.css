@@ -1,0 +1,48 @@
+.container {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.buttons {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+}
+.button{
+    border: solid black 1px;
+    border-radius: 8px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+.button:hover{
+    cursor: pointer;
+}
+.colorButtons {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .button .color {
+    chosenColor==
+} */
+.canvas {
+    display:flex;
+    flex-wrap: wrap;
+    height: 800px;
+    width: 800px;
+    border: solid black 5px;
+    border-radius: 8px;
+}
+
+.square {
+    border: solid black 1px; 
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+}
+

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="container">
+    <h3>Etch-a-sketch</h3>
+    <div class="buttons">
+        <button class="button setSize">Set custom size</button>
+        <button class="button erase">Erase</button>
+
+        <div class="colorButtons">
+        <!-- <button class="button chooseColor">Choose color</button> -->
+        <label for="color">Choose color: </label>
+        <input class="chosenColor" type="color" id="color" style="accent-color: rgb(0, 0, 0);">
+        <!-- <div class="chosenColor"></div> -->
+        </div>
+
+        <button class="button randomColor">Random color</button>
+        <button class="button dragDraw">Draw</button>
+    </div>
+    <div class="canvas"></div>
+</div>
+
+
+    <script>
+        const canvas = document.querySelector(".canvas");
+        // const canvasSize = `800 px`;
+        const buttonSetSize = document.querySelector(".setSize");
+        const buttonErase = document.querySelector(".erase");
+        const buttonChooseColor = document.querySelector(".chosenColor");
+        const buttonRandomColor = document.querySelector(".randomColor");
+        const buttonDragDraw = document.querySelector(".dragDraw");
+        
+        let singleColor = false;
+        let drawMode = false;
+        
+        function createSquares(canvasSize = 16) {
+            const squareSize = 800/canvasSize;
+            for (let i =1; i<=canvasSize*canvasSize; i++) {
+                const square = document.createElement("div");
+                square.setAttribute("class", "square");
+                square.style.width = `${squareSize}px`; 
+                square.style.height = `${squareSize}px`; 
+                canvas.appendChild(square);
+            }
+        }
+
+        function getColor() {
+            let colors = ["", "", ""]
+               colors = colors.map(() => 
+                Math.floor(Math.random() * 256));               
+             return `rgb(${colors[0]}, ${colors[1]}, ${colors[2]})`;
+    }
+
+        function hoverDraw (color) {
+            const squares = document.querySelectorAll(".square");
+            squares.forEach(function(square) {
+                square.addEventListener("mouseover", function () {
+                square.style.background = color === undefined ? getColor() : color;
+                
+                // else {
+                // square.addEventListener("click", function () {
+                // console.log("clicked");
+                // square.style.background = getColor();
+                // })  
+                // }
+        });
+        })
+    };
+        createSquares();
+        hoverDraw ();
+        
+        buttonSetSize.addEventListener("click", function () {
+            input = prompt("Choose the number between 1 and 100");
+            if (input === null){
+                return;
+            }
+            while (input < 0 || input > 100 || !Number(input)){
+                alert("Please type correct number between 1 and 100")
+                input = prompt("Choose the number between 1 and 100");
+                if (input === null){
+                return;
+            }
+            }
+                canvas.textContent = '';
+                createSquares(canvasSize = input);
+               hoverDraw ();
+        })
+
+        buttonErase.addEventListener("click", function () {
+            const squares = document.querySelectorAll(".square");
+            squares.forEach(function(square) {
+            square.style.background = "white"
+        });
+        })
+
+        buttonChooseColor.addEventListener("click", function () {
+            // getColor(color = buttonChooseColor.value)
+            hoverDraw(color = buttonChooseColor.value); 
+        })
+
+        buttonRandomColor.addEventListener("click", function () {
+            hoverDraw();
+        })
+
+        // buttonDragDraw.addEventListener("click", function () {
+        //     hoverDraw(color, draw = "draw");
+        // })
+
+    </script>
+</body>
+</html>
