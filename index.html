@@ -5,43 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playwrite+IN:wght@100..400&display=swap');
+        </style>
 </head>
 <body>
 <div class="container">
-    <h3>Etch-a-sketch</h3>
+    <h3 class="header">Etch-a-sketch</h3>
     <div class="buttons">
-        <button class="button setSize">Set custom size</button>
+        <button class="button dragDraw" id = "drag" onclick="toggleModes()">Draw</button>
         <button class="button erase">Erase</button>
 
-        <div class="colorButtons">
-        <!-- <button class="button chooseColor">Choose color</button> -->
-        <label for="color">Choose color: </label>
-        <input class="chosenColor" type="color" id="color" style="accent-color: rgb(0, 0, 0);">
-        <!-- <div class="chosenColor"></div> -->
-        </div>
+            <div class="colorButtons">
+            <label for="color" class = "label">Choose color: </label>
+            <input class="chosenColor" type="color" id="color" style="accent-color: rgb(0, 0, 0);">
+            </div>
+    
+            <button class="button randomColor">Random color</button>
+            <button class="button fill">Color fill</button> 
 
-        <button class="button randomColor">Random color</button>
-        <button class="button dragDraw">Draw</button>
+        <button class="button setSize">Set canvas size</button> 
     </div>
+
     <div class="canvas"></div>
 </div>
 
 
     <script>
         const canvas = document.querySelector(".canvas");
-        // const canvasSize = `800 px`;
+        const canvasSize = 800;
         const buttonSetSize = document.querySelector(".setSize");
         const buttonErase = document.querySelector(".erase");
         const buttonChooseColor = document.querySelector(".chosenColor");
         const buttonRandomColor = document.querySelector(".randomColor");
         const buttonDragDraw = document.querySelector(".dragDraw");
+        const buttonFill = document.querySelector(".fill");
         
         let singleColor = false;
-        let drawMode = false;
+        let dragMode = buttonDragDraw.classList.contains("drag");
+        let isDrawing = false;
         
-        function createSquares(canvasSize = 16) {
-            const squareSize = 800/canvasSize;
-            for (let i =1; i<=canvasSize*canvasSize; i++) {
+        function createSquares(squareDimension = 16) {
+            const squareSize = canvasSize/squareDimension;
+            for (let i =1; i<=squareDimension*squareDimension; i++) {
                 const square = document.createElement("div");
                 square.setAttribute("class", "square");
                 square.style.width = `${squareSize}px`; 
@@ -50,28 +56,82 @@
             }
         }
 
-        function getColor() {
-            let colors = ["", "", ""]
-               colors = colors.map(() => 
-                Math.floor(Math.random() * 256));               
-             return `rgb(${colors[0]}, ${colors[1]}, ${colors[2]})`;
+        function getRandomColor() {
+            let colors = ["", "", ""];
+            let rand = Math.floor(Math.random() * 10)
+            colors[0] = ~~(360 * Math.random())
+            colors[1] = ~~(70 + 20 * Math.random())
+            colors[2] = ~~(68 +  7 * Math.random())
+            return `hsla(${colors[0]}, ${colors[1]}%, ${colors[2]}%, 0.95)`;
     }
 
-        function hoverDraw (color) {
-            const squares = document.querySelectorAll(".square");
-            squares.forEach(function(square) {
-                square.addEventListener("mouseover", function () {
-                square.style.background = color === undefined ? getColor() : color;
-                
-                // else {
-                // square.addEventListener("click", function () {
-                // console.log("clicked");
-                // square.style.background = getColor();
-                // })  
-                // }
+        function getColor() {
+            if (singleColor)
+        {
+            return buttonChooseColor.value;            
+        }
+            else {
+                return getRandomColor();
+            }
+        }
+
+function hoverDraw () {
+    const squares = document.querySelectorAll(".square");
+    squares.forEach(square => {
+        square.removeEventListener("mouseover", draw);
+        square.removeEventListener("mousedown", startDrawing);
+            square.removeEventListener("mouseover", drawWhileDragging);
+            square.removeEventListener("mouseup", stopDrawing);
+    });
+    
+    if (dragMode) { 
+        squares.forEach(square => {
+            square.addEventListener("mouseover", draw);
         });
-        })
-    };
+    } else { 
+        squares.forEach(square => {
+            square.addEventListener("mousedown", startDrawing);
+            square.addEventListener("mouseover", drawWhileDragging);
+            square.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mouseleave", stopDrawing);
+        });
+    }
+}
+    function draw(event) {
+    event.target.style.background = getColor();
+}   
+
+function startDrawing(event) {
+    isDrawing = true;
+    draw(event);
+}
+
+function drawWhileDragging(event) {
+    if (isDrawing) {
+        draw(event);
+    }
+}
+
+function stopDrawing() {
+    isDrawing = false;
+}
+
+function toggleModes() {
+            buttonDragDraw.classList.toggle("drag");
+            dragMode = !dragMode; 
+            if (dragMode) { 
+        buttonDragDraw.textContent = "Draw";
+            } else { 
+                buttonDragDraw.textContent = "Sketch";
+            }
+            hoverDraw();
+         }
+
+function fillCanvas () {
+    const squares = document.querySelectorAll(".square");
+    squares.forEach(square => {square.style.background = getColor()})
+}
+
         createSquares();
         hoverDraw ();
         
@@ -88,7 +148,7 @@
             }
             }
                 canvas.textContent = '';
-                createSquares(canvasSize = input);
+                createSquares(squareDimension = input);
                hoverDraw ();
         })
 
@@ -100,18 +160,26 @@
         })
 
         buttonChooseColor.addEventListener("click", function () {
-            // getColor(color = buttonChooseColor.value)
-            hoverDraw(color = buttonChooseColor.value); 
+           singleColor = true;
         })
 
         buttonRandomColor.addEventListener("click", function () {
-            hoverDraw();
+            singleColor = false;
         })
 
-        // buttonDragDraw.addEventListener("click", function () {
-        //     hoverDraw(color, draw = "draw");
-        // })
+        buttonDragDraw.addEventListener("click", toggleModes())
 
+        buttonFill.addEventListener("click", fillCanvas)
+
+        // function darkening () {
+            // square.style.opacity = 0;
+    // let currentOpacity = parseFloat(event.target.style.opacity);
+    // if (currentOpacity < 1) {
+    //     currentOpacity += 0.1;
+    //     event.target.style.opacity += 0.1
+    //     event.target.style.opacity = currentOpacity;
+    // }
+        // }
     </script>
 </body>
 </html>
