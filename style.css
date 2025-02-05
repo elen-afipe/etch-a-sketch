@@ -29,13 +29,6 @@ body {
     align-items: center;
     padding: 8px;
 }
-.label{
-    color: rgba(62, 37, 6, 0.806);
-    padding: 8px 24px;
-    background-color: #fac09b;
-    border: solid #fac09b 1px; 
-    border-radius: 20px;
-}
 .button{
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
@@ -68,10 +61,6 @@ body {
     display:flex;
     justify-content: center;
     align-items: center;
-}
-
-.label {
-    margin: 10px;
 }
 
 .canvas {
